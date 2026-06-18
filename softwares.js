@@ -111,12 +111,31 @@
       "size": "",
       "environment": "Win 2000 |Win XP |Win 7 | Win 10 | Win 11",
       "description": "一款文件搜索工具，基于名称实时定位文件和目录。\r\n体积小巧，界面简洁易用，快速建立索引，快速搜索，同时占用极低的系统资源，实时跟踪文件变化。\r\n在搜索框输入文字，它就会只显示过滤后的文件和目录。\r\nEverything搜索只基于文件和文件夹的名称，创建数据库速度超快。"
+    },
+    {
+      "id": "P194",
+      "name": "test",
+      "category": "test",
+      "weight": "",
+      "mainImage": "",
+      "detailImages": "",
+      "resourcePath": "",
+      "isRecommend": false,
+      "version": "",
+      "size": "",
+      "environment": "",
+      "description": "test"
     }
   ],
   "announcements": [
     {
       "id": "1",
       "title": "欢迎来到畅享资源大厅",
+      "targetUrl": ""
+    },
+    {
+      "id": "2",
+      "title": "test",
       "targetUrl": ""
     }
   ],
@@ -132,6 +151,7 @@
   ],
   "categories": [
     "游戏",
-    "工具"
+    "工具",
+    "test"
   ]
 };
