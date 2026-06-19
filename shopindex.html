@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>畅享资源软件下载</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F4F7FA;
+            color: #334155;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #4A90E2 0%, #5C9CE6 100%);
+            color: #fff;
+            text-align: center;
+            padding: 38px 20px;
+        }
+        .header h1 { font-size: 1.65rem; font-weight: 700; margin-bottom: 8px; }
+        .header p { font-size: 0.9rem; opacity: 0.9; }
+        .main-container {
+            max-width: 1140px;
+            margin: 25px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 24px;
+            flex: 1;
+            width: 100%;
+        }
+        .sidebar-wrapper {
+            width: 230px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .sidebar {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid #E6EFFB;
+        }
+        .sidebar-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #8896A8;
+            padding: 4px 8px 10px;
+            border-bottom: 1px solid #F0F4FA;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .category-list { list-style: none; }
+        .category-item {
+            padding: 10px 14px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #606F7B;
+            font-weight: 500;
+            transition: 0.25s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .category-item:hover { background-color: #F0F6FE; color: #4A90E2; }
+        .category-item.active {
+            background-color: #4A90E2;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(74,144,226,0.25);
+        }
+        .sidebar-notice-panel {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid #E6EFFB;
+        }
+        .notice-sub-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #64748B;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .notice-list {
+            max-height: 200px;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .notice-item {
+            font-size: 0.82rem;
+            color: #4F5E74;
+            line-height: 1.6;
+            background: #F5F9FF;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #4A90E2;
+        }
+        .notice-item:last-child { margin-bottom: 0; }
+        .recommend-zone {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid #E6EFFB;
+            margin-top: 0;
+        }
+        .recommend-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .recommend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: #606F7B;
+            padding: 8px 10px;
+            background: #F8FAFD;
+            border-radius: 8px;
+            border: 1px solid #EDF3FA;
+            transition: 0.2s;
+        }
+        .recommend-item:hover { border-color: #D6E4F7; background: #F1F6FC; }
+        .recommend-item a {
+            color: #4A90E2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .content-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+        .control-bar {
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1px solid #E6EFFB;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .control-bar h2 {
+            font-size: 1rem;
+            color: #2C3E50;
+            font-weight: 700;
+        }
+        .control-bar h2 span { color: #4A90E2; }
+        .search-box-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            font-size: 0.85rem;
+            background: #F8FAFD;
+            border: 1px solid #E2EAF4;
+            border-radius: 8px;
+            outline: none;
+        }
+        .search-input:focus {
+            background: #fff;
+            border-color: #4A90E2;
+        }
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: #A0AEC0;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .item {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+            border: 1px solid #E6EFFB;
+            display: flex;
+            flex-direction: column;
+        }
+        .item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74,144,226,0.1);
+        }
+        .item-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #F8FAFD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #F0F4FA;
+            overflow: hidden;
+        }
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .item-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            min-height: 2.4em;
+        }
+        .item-link {
+            display: block;
+            text-align: center;
+            background-color: #4A90E2;
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 0;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .item-link:hover { background-color: #357ABD; }
+        .site-footer {
+            background: #fff;
+            border-top: 1px solid #E6EFFB;
+            padding: 24px 0 20px;
+            margin-top: 40px;
+            width: 100%;
+            text-align: center;
+        }
+        .footer-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .friend-links-zone {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #E2EAF4;
+            width: 100%;
+            font-size: 0.82rem;
+            color: #606F7B;
+        }
+        .friend-link-node {
+            color: #606F7B;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .friend-link-node:hover { color: #4A90E2; }
+        .disclaimer-text {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            line-height: 1.6;
+            max-width: 800px;
+            text-align: center;
+        }
+        .copyright-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748B;
+            padding-top: 8px;
+        }
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .sidebar-wrapper { width: 100%; }
+            .category-list {
+                display: flex;
+                overflow-x: auto;
+                gap: 6px;
+            }
+            .category-list::-webkit-scrollbar { display: none; }
+            .category-item {
+                flex-shrink: 0;
+                margin-bottom: 0;
+                background: #EDF3FA;
+                color: #5C6E80;
+                border-radius: 6px;
+            }
+            /* 移除所有强制隐藏规则，由 JS 控制显示/隐藏 */
+            .control-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .search-box-wrapper { width: 100%; max-width: 100%; }
+            .grid-container { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        }
+    </style>
+    <script src="softwares.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>畅享资源大厅</h1>
+        <p>畅游互联网资源的分享中心</p>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar-wrapper">
+            <div class="sidebar">
+                <div class="sidebar-title">📂 资源类别架构</div>
+                <ul class="category-list" id="categoryUl"></ul>
+            </div>
+            <div class="sidebar-notice-panel">
+                <div class="notice-sub-title">📢 大厅动态公告</div>
+                <ul id="announcementList" class="notice-list"></ul>
+            </div>
+            <div id="recommendZone" class="recommend-zone">
+                <div class="notice-sub-title">⭐ 精品推荐</div>
+                <ul id="recommendList" class="recommend-list"></ul>
+            </div>
+        </div>
+
+        <div class="content-panel">
+            <div class="control-bar">
+                <h2>当前视图：<span id="currentCategoryTitle">全部资源</span></h2>
+                <div class="search-box-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="键入关键字实时检索资源...">
+                </div>
+            </div>
+            <div class="grid-container" id="productGrid"></div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div id="friendLinksZone" class="friend-links-zone"></div>
+            <div class="disclaimer-text">
+                <p>免责声明：本站提供的一切数字化资产均收集自互联网公开分享渠道，仅供个人技术研究、安全测试与学术交流使用，<strong>严禁用于商业谋利或非法用途。</strong></p>
+                <p>如您认为本站资源侵犯了您的合法权益，请通过官方渠道告知，我们将在核实后第一时间处理。</p>
+            </div>
+            <div class="copyright-text">© 2026 畅享资源大厅. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        let allProducts = [];
+        let categories = ["全部资源"];
+        let currentCategory = "全部资源";
+        let searchKeyword = "";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof ALL_SOFTWARES === 'undefined' || !ALL_SOFTWARES.products) {
+                document.getElementById('productGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#EF4444;padding:40px;">⚠️ 数据加载失败，请检查 softwares.js 文件。</div>';
+                return;
+            }
+            allProducts = ALL_SOFTWARES.products;
+
+            if (ALL_SOFTWARES.categories && Array.isArray(ALL_SOFTWARES.categories) && ALL_SOFTWARES.categories.length > 0) {
+                categories = ["全部资源", ...ALL_SOFTWARES.categories];
+            } else {
+                const catSet = new Set();
+                allProducts.forEach(p => { if (p.category) catSet.add(p.category); });
+                categories = ["全部资源", ...Array.from(catSet)];
+            }
+
+            // 解析 URL 参数（仅用于初始分类）
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            if (categoryParam && categories.includes(categoryParam)) {
+                currentCategory = categoryParam;
+            } else {
+                currentCategory = "全部资源";
+            }
+
+            renderCategories();
+            loadAnnouncements();
+            loadRecommendations();
+            loadFriendLinks();
+            updateCategoryUI(currentCategory);
+            renderProductGrid();
+
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                searchKeyword = e.target.value.trim().toLowerCase();
+                renderProductGrid();
+            });
+        });
+
+        function renderCategories() {
+            const ul = document.getElementById('categoryUl');
+            ul.innerHTML = '';
+            categories.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'category-item' + (cat === currentCategory ? ' active' : '');
+                li.textContent = cat;
+                li.setAttribute('data-cat', cat);
+                li.onclick = () => filterCategory(cat);
+                ul.appendChild(li);
+            });
+        }
+
+        function updateCategoryUI(cat) {
+            document.getElementById('currentCategoryTitle').innerText = cat;
+            document.querySelectorAll('.category-item').forEach(item => {
+                if (item.getAttribute('data-cat') === cat) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            updateCategoryUI(cat);
+            renderProductGrid();
+        }
+
+        function renderProductGrid() {
+            let filtered = allProducts;
+            if (currentCategory !== "全部资源") {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            if (searchKeyword !== "") {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchKeyword));
+            }
+
+            const grid = document.getElementById('productGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94A3B8;padding:60px;">💡 未检索到符合条件的资源。</div>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(product => {
+                const logo = product.mainImage && product.mainImage.trim() !== '' ? product.mainImage : 'logo/default.png';
+                html += `
+                    <div class="item">
+                        <div class="item-image-wrapper">
+                            <img src="${logo}" alt="${product.name}" class="item-image" onerror="this.onerror=null; this.src='logo/default.png';">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title" title="${product.name}">${product.name}</div>
+                            <a href="tail.html?id=${product.id}" class="item-link">查看详情</a>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function loadAnnouncements() {
+            const listContainer = document.getElementById('announcementList');
+            if (!listContainer) return;
+            // 清空容器，以便重新填充或隐藏
+            listContainer.innerHTML = '';
+            if (ALL_SOFTWARES.announcements && ALL_SOFTWARES.announcements.length > 0) {
+                let html = '';
+                ALL_SOFTWARES.announcements.forEach(ann => {
+                    if (ann.title && ann.title.trim() !== '') {
+                        html += `<li class="notice-item"><span class="notice-badge">📢</span> ${ann.title}</li>`;
+                    }
+                });
+                if (html) {
+                    listContainer.innerHTML = html;
+                    listContainer.parentElement.style.display = 'block'; // 确保父容器显示
+                } else {
+                    listContainer.parentElement.style.display = 'none';
+                }
+            } else {
+                listContainer.parentElement.style.display = 'none';
+            }
+        }
+
+        function loadRecommendations() {
+            const recZone = document.getElementById('recommendZone');
+            const recList = document.getElementById('recommendList');
+            if (!recZone || !recList) return;
+            const recommends = allProducts.filter(p => p.isRecommend === true);
+            if (recommends.length === 0) {
+                recZone.style.display = 'none';
+                return;
+            }
+            let html = '';
+            recommends.forEach(rec => {
+                html += `
+                    <li class="recommend-item">
+                        <span>${rec.name}</span>
+                        <a href="tail.html?id=${rec.id}">查看详情</a>
+                    </li>
+                `;
+            });
+            recList.innerHTML = html;
+            recZone.style.display = 'block';
+        }
+
+        function loadFriendLinks() {
+            const zone = document.getElementById('friendLinksZone');
+            if (!zone) return;
+            if (ALL_SOFTWARES.friendLinks && ALL_SOFTWARES.friendLinks.length > 0) {
+                let linksHtml = '';
+                ALL_SOFTWARES.friendLinks.forEach(link => {
+                    if (link.siteName && link.jumpUrl && link.jumpUrl !== 'http://') {
+                        linksHtml += `<a href="${link.jumpUrl}" target="_blank" class="friend-link-node">${link.siteName}</a>`;
+                    }
+                });
+                if (linksHtml) {
+                    zone.innerHTML = '<span style="color:#606F7B; margin-right:4px;">友情链接：</span>' + linksHtml;
+                    zone.style.display = 'flex';
+                } else {
+                    zone.style.display = 'none';
+                }
+            } else {
+                zone.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
